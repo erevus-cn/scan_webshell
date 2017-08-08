@@ -17,17 +17,14 @@ class Consumer(multiprocessing.Process):
     def run(self):
         try:
             while not self.queue.empty():
-                file_name = self.queue.get_nowait()
+                file_name = self.queue.get()
 
                 fopen = open(file_name, 'r')
                 filestr = fopen.read()
                 result = []
                 for rule in self.webshell_rules:
                     rule = rule.strip()
-                    try:
-                        result = re.findall(rule, filestr)
-                    except  Exception as e:
-                        print e
+                    result = re.findall(rule, filestr)
                     if result:
                             code = self.get_code(file_name, rule)
                             result_dict = {
@@ -71,7 +68,7 @@ def read_rule(rule_file_path):
 if __name__=='__main__':    
 
     file_path = sys.argv[1]    #填代码目录
-    webshell_rule_path = "./webshell_rule.txt"
+    webshell_rule_path = "./rule.txt"
 
     print "[*] 扫描中...."
     paths_list = list_dictionary_codes(file_path)
