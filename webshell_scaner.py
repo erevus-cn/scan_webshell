@@ -17,7 +17,7 @@ class Consumer(multiprocessing.Process):
     def run(self):
         try:
             while not self.queue.empty():
-                file_name = self.queue.get()
+                file_name = self.queue.get(True, 1)
 
                 fopen = open(file_name, 'r')
                 filestr = fopen.read()
@@ -83,7 +83,7 @@ if __name__=='__main__':
     for i in range(4):
         processed[i].start()
     for i in range(4):
-        processed[i].join()
+        processed[i].join(10)
     for result in result_list:
         print json.dumps(result, sort_keys=True, indent=4)
     print "[+] 扫描完成...."
